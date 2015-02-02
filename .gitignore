@@ -10,6 +10,7 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+<<<<<<< HEAD
 
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm
 
@@ -61,3 +62,5 @@ crashlytics-build.properties
 # Ignore gradle files
 .gradle/
 build/
+=======
+>>>>>>> 7feb7b95ab1984d775d6e7d8dee6ce526c1aed22
