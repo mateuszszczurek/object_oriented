@@ -9,6 +9,7 @@ public class ApplicationRunner {
 
     private static final String SNIPER_PASSWORD = "sniper";
     private static final String SNIPER_ID = "sniper";
+    public static final String SNIPER_XMPP_ID = "sniper@szczurki-komputer/Auction";
 
     private AuctionSniperDriver driver;
 
@@ -23,7 +24,6 @@ public class ApplicationRunner {
                     e.printStackTrace();
                 }
             }
-
         };
 
         thread.setDaemon(true);
@@ -41,5 +41,9 @@ public class ApplicationRunner {
         if (driver != null) {
             driver.dispose();
         }
+    }
+
+    public void hasShownSniperIsBidding() {
+        driver.showsSniperStatus(Main.STATUS_BIDDING);
     }
 }

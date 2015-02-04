@@ -1,5 +1,6 @@
 package endtoend;
 
+import org.hamcrest.Matcher;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.packet.Message;
@@ -8,6 +9,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -21,7 +23,11 @@ public class SingleMessageListener implements MessageListener {
         messages.add(message);
     }
 
-    public void receivesAMessage() throws InterruptedException {
-        assertThat("Message", messages.poll(5, TimeUnit.SECONDS), is(notNullValue()));
+    public void receivesAMessageThat(Matcher<? super String> matcher) throws InterruptedException {
+        Message message = messages.poll(5, TimeUnit.SECONDS);
+        assertThat("Message", message, is(notNullValue()));
+        assertThat(message.getBody(), matcher);
+
     }
+
 }
