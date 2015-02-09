@@ -4,4 +4,5 @@ public interface AuctionEventListener {
 
     void onAuctionClosed();
 
+    void currentPrice(int currentPrice, int increment);
 }

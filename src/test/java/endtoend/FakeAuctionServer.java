@@ -38,12 +38,9 @@ public class FakeAuctionServer {
         connection.connect();
         connection.login(format(ITEM_ID_AS_LOGIN, itemId), AUCTION_PASSWORD, AUCTION_RESOURCE);
 
-        connection.getChatManager().addChatListener(new ChatManagerListener() {
-            @Override
-            public void chatCreated(Chat chat, boolean b) {
-                currentChat = chat;
-                currentChat.addMessageListener(messageListener);
-            }
+        connection.getChatManager().addChatListener((chat, b) -> {
+            currentChat = chat;
+            currentChat.addMessageListener(messageListener);
         });
     }
 
@@ -52,7 +49,7 @@ public class FakeAuctionServer {
     }
 
     public void announceClosed() throws XMPPException {
-        currentChat.sendMessage(new Message());
+        currentChat.sendMessage("SOLVersion: 1.1; Event: CLOSE;");
     }
 
     public void stop() {
@@ -91,7 +88,10 @@ public class FakeAuctionServer {
         public Message toMessage() {
             String message = format("SOLVersion: 1.1; Event: PRICE; " +
                     "CurrentPrice: %d; Increment: %d; Bidder: %s;", price, minimalIncrement, auctioneer);
-            return new Message(message);
+
+            Message msg = new Message();
+            msg.setBody(message);
+            return msg;
         }
 
     }

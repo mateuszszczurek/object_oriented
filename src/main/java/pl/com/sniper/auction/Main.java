@@ -13,6 +13,8 @@ import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import static javax.swing.SwingUtilities.invokeAndWait;
+
 public class Main implements AuctionEventListener {
 
     public static final String SNIPER_STATUS_NAME = "Sniper Status";
@@ -83,16 +85,16 @@ public class Main implements AuctionEventListener {
     }
 
     private void startUserInterface() throws Exception {
-        SwingUtilities.invokeAndWait(new Runnable() {
-            @Override
-            public void run() {
-                ui = new MainWindow();
-            }
-        });
+        invokeAndWait(() -> ui = new MainWindow());
     }
 
     @Override
     public void onAuctionClosed() {
         ui.showStatus(STATUS_LOST);
+    }
+
+    @Override
+    public void currentPrice(int currentPrice, int increment) {
+        ui.showStatus(STATUS_BIDDING);
     }
 }

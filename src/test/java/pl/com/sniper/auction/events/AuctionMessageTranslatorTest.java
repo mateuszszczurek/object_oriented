@@ -26,18 +26,17 @@ public class AuctionMessageTranslatorTest {
 
     }
 
-    // todo
-//    @Test
-//    public void whenMessageIsNotCloseShouldNotNotify() {
-//
-//        Message auctionClosedMessage = new Message();
-//        auctionClosedMessage.setBody("SOLVersion: 1.1; Event: NOT_CLOSED;");
-//
-//        sut.processMessage(auctionClosedMessage);
-//
-//        verify(listener).onAuctionClosed();
-//
-//    }
+    @Test
+    public void notifiesBidDetailsWhenCurrentMessageReceived() {
+
+        Message auctionClosedMessage = new Message();
+        auctionClosedMessage.setBody("SOLVersion: 1.1; Event: PRICE; CurrentPrice: 192; Increment: 7; bidder: Someone else;");
+
+        sut.processMessage(UNUSED_CHAT, auctionClosedMessage);
+
+        verify(listener).currentPrice(192, 7);
+
+    }
 
 
 }
