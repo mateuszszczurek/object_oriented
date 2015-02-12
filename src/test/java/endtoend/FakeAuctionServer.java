@@ -2,11 +2,11 @@ package endtoend;
 
 import org.hamcrest.Matcher;
 import org.jivesoftware.smack.Chat;
-import org.jivesoftware.smack.ChatManagerListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 import pl.com.sniper.auction.Main;
+import pl.com.sniper.auction.sniper.XMPPAuction;
 
 import static java.lang.String.format;
 import static org.hamcrest.CoreMatchers.anything;
@@ -45,7 +45,7 @@ public class FakeAuctionServer {
     }
 
     public void hasReceivedJoiRequestFromSniper(String sniperId) throws InterruptedException {
-        receivesAMessageMatching(sniperId, equalTo(Main.JOIN_COMMAND_FORMAT));
+        receivesAMessageMatching(sniperId, equalTo(XMPPAuction.JOIN_COMMAND_FORMAT));
     }
 
     public void announceClosed() throws XMPPException {
@@ -71,6 +71,15 @@ public class FakeAuctionServer {
 
     public void reportPrice(int price, int minimalIncrement, String auctioneer) throws XMPPException {
         currentChat.sendMessage(new AuctionEvent(price, minimalIncrement, auctioneer).toMessage());
+    }
+
+    public void announceWinner(String auctioneer) throws XMPPException {
+        currentChat.sendMessage(format("SOLVersion: 1.1; Event: WON; " +
+                "Bidder: %s;", auctioneer));
+    }
+
+    public void hasShownSniperIsWinning() {
+
     }
 
     private class AuctionEvent {

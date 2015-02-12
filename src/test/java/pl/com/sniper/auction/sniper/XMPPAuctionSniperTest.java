@@ -1,17 +1,18 @@
 package pl.com.sniper.auction.sniper;
 
 import org.junit.Test;
+import pl.com.sniper.auction.events.AuctionEventListener;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static pl.com.sniper.auction.events.AuctionEventListener.PriceSource.FromSniper;
 
-public class AuctionSniperTest {
+public class XMPPAuctionSniperTest {
 
-    private final Auction auction = mock(Auction.class);
+    private final Auction XMPPAuction = mock(Auction.class);
     private final SniperListener sniperListener = mock(SniperListener.class);
 
-    private final AuctionSniper sniper = new AuctionSniper(auction, sniperListener);
+    private final AuctionSniper sniper = new AuctionSniper(XMPPAuction, sniperListener);
 
     @Test
     public void reportsLostWhenAuctionCloses() {
@@ -28,11 +29,13 @@ public class AuctionSniperTest {
         final int price = 1001;
         final int increment = 25;
 
-        sniper.currentPrice(price, increment);
+        sniper.currentPrice(price, increment, FromSniper);
 
         verify(sniperListener).sniperBidding();
-        verify(auction).bid(price + increment);
+        verify(XMPPAuction).bid(price + increment);
 
     }
+
+
 
 }
