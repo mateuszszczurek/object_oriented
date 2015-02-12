@@ -4,18 +4,18 @@ import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.packet.Message;
-import pl.com.sniper.auction.events.AuctionEventListener;
 import pl.com.sniper.auction.events.AuctionMessageTranslator;
+import pl.com.sniper.auction.sniper.Auction;
+import pl.com.sniper.auction.sniper.AuctionSniper;
+import pl.com.sniper.auction.sniper.SniperListener;
 import pl.com.sniper.gui.MainWindow;
 
-import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import static javax.swing.SwingUtilities.invokeAndWait;
 
-public class Main implements AuctionEventListener {
+public class Main implements SniperListener {
 
     public static final String SNIPER_STATUS_NAME = "Sniper Status";
     public static final String STATUS_LOST = "Lost";
@@ -31,6 +31,7 @@ public class Main implements AuctionEventListener {
 
     public static final String JOIN_COMMAND_FORMAT = "JOIN COMMAND";
     public static final String BID_COMMAND_FORMAT = "SOLVersion: 1.1; Command: BID; Price: %s;";
+    private static final MessageListener NO_LISTENER = null;
 
     private MainWindow ui;
 
@@ -52,8 +53,13 @@ public class Main implements AuctionEventListener {
     private void joinAuction(String itemId, XMPPConnection connection) throws XMPPException {
 
        disconnectWhenUICloses(connection);
+
         Chat chat = connection.getChatManager().createChat(auctionId(itemId, connection),
-                new AuctionMessageTranslator(this));
+                NO_LISTENER);
+
+        AuctionMessageTranslator listener = new AuctionMessageTranslator(new AuctionSniper(new Auction(chat), this));
+
+        chat.addMessageListener(listener);
 
         this.notToBeGCd = chat;
 
@@ -89,12 +95,12 @@ public class Main implements AuctionEventListener {
     }
 
     @Override
-    public void onAuctionClosed() {
+    public void sniperLost() {
         ui.showStatus(STATUS_LOST);
     }
 
     @Override
-    public void currentPrice(int currentPrice, int increment) {
+    public void sniperBidding() {
         ui.showStatus(STATUS_BIDDING);
     }
 }
