@@ -28,10 +28,11 @@ public class AuctionSniperEndToEndTest {
         application.hasShownSniperIsBidding();
 
         auction.hasReceivedABid(1098, ApplicationRunner.SNIPER_XMPP_ID);
-        auction.announceWinner(ApplicationRunner.SNIPER_XMPP_ID);
+
+        auction.reportPrice(1098, 97, ApplicationRunner.SNIPER_XMPP_ID);
+        application.hasShownSniperIsWinning();
 
         auction.announceClosed();
-
         application.showSniperHasWonAuction();
     }
 
@@ -47,9 +48,6 @@ public class AuctionSniperEndToEndTest {
 
         auction.hasReceivedABid(1098, ApplicationRunner.SNIPER_XMPP_ID);
 
-        auction.reportPrice(1098, 97, ApplicationRunner.SNIPER_XMPP_ID);
-
-        auction.hasShownSniperIsWinning();
         auction.announceClosed();
         application.showsSniperHasLostAuction();
     }

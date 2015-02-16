@@ -9,6 +9,9 @@ import pl.com.sniper.auction.sniper.Auction;
 import pl.com.sniper.auction.sniper.XMPPAuction;
 import pl.com.sniper.auction.sniper.AuctionSniper;
 
+import java.util.Arrays;
+import java.util.Deque;
+
 public class Main {
 
     public static final String SNIPER_STATUS_NAME = "Sniper Status";

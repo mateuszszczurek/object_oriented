@@ -22,7 +22,6 @@ public class AuctionMessageTranslator implements MessageListener {
         this.sniperId = sniperId;
     }
 
-
     @Override
     public void processMessage(Chat chat, Message message) {
 
@@ -33,10 +32,6 @@ public class AuctionMessageTranslator implements MessageListener {
             case PRICE_EVENT: listener.currentPrice(event.getPrice(), event.getIncrement(), event.isFrom(sniperId)) ; break;
         }
 
-    }
-
-    private boolean ifSniperMadeThatBid(AuctionEvent event) {
-        return event.getAuctioneer().equals(sniperId);
     }
 
     private static class AuctionEvent {
@@ -86,7 +81,7 @@ public class AuctionMessageTranslator implements MessageListener {
         }
 
         public String getAuctioneer() {
-            return event.get("Auctioneer");
+            return event.get("Bidder");
         }
 
         public AuctionEventListener.PriceSource isFrom(String sniperId) {

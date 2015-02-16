@@ -34,7 +34,7 @@ public class XMPPAuctionMessageTranslatorTest {
     public void notifiesBidDetailsWhenCurrentMessageReceivedFromSomeoneElse() {
 
         Message auctionClosedMessage = new Message();
-        auctionClosedMessage.setBody("SOLVersion: 1.1; Event: PRICE; CurrentPrice: 192; Increment: 7; Auctioneer: Someone else;");
+        auctionClosedMessage.setBody("SOLVersion: 1.1; Event: PRICE; CurrentPrice: 192; Increment: 7; Bidder: Someone else;");
 
         sut.processMessage(UNUSED_CHAT, auctionClosedMessage);
 
@@ -46,7 +46,7 @@ public class XMPPAuctionMessageTranslatorTest {
         public void notifiesBidDetailsWhenCurrentMessageReceivedFromSniper() {
 
         Message auctionClosedMessage = new Message();
-        auctionClosedMessage.setBody("SOLVersion: 1.1; Event: PRICE; CurrentPrice: 192; Increment: 7; Auctioneer: " +SNIPER_ID + ";");
+        auctionClosedMessage.setBody("SOLVersion: 1.1; Event: PRICE; CurrentPrice: 192; Increment: 7; Bidder: " +SNIPER_ID + ";");
 
         sut.processMessage(UNUSED_CHAT, auctionClosedMessage);
 
