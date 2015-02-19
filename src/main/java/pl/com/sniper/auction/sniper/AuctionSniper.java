@@ -7,35 +7,38 @@ import static pl.com.sniper.auction.events.AuctionEventListener.PriceSource.From
 
 public class AuctionSniper implements AuctionEventListener {
 
-    private Auction auction;
-    private SniperListener sniperListener;
+    private final Auction auction;
+    private final SniperListener sniperListener;
 
-    private boolean sniperWinning;
+    private SniperSnapshot snapshot;
 
-    public AuctionSniper(Auction auction, SniperListener sniperListener) {
+    public AuctionSniper(String itemId, Auction auction, SniperListener sniperListener) {
         this.auction = auction;
         this.sniperListener = sniperListener;
+        this.snapshot = SniperSnapshot.joining(itemId);
     }
 
     @Override
     public void onAuctionClosed() {
-        if(sniperWinning) {
-            sniperListener.sniperWon();
-        } else {
-            sniperListener.sniperLost();
-        }
+        snapshot = snapshot.closed();
+        notifyChange();
     }
 
     @Override
     public void currentPrice(int currentPrice, int increment, PriceSource priceSource) {
         if(FromOtherBidder.equals(priceSource)) {
-            sniperWinning = false;
-            auction.bid(currentPrice + increment);
-            sniperListener.sniperBidding();
+            int bid = currentPrice + increment;
+            auction.bid(bid);
+            snapshot = snapshot.bidding(currentPrice, bid);
         } else if (FromSniper.equals(priceSource)) {
-            sniperWinning = true;
-            sniperListener.sniperWinning();
+            snapshot = snapshot.winning(currentPrice);
         }
+
+        notifyChange();
+    }
+
+    private void notifyChange() {
+        sniperListener.sniperStateChanged(snapshot);
     }
 
 }

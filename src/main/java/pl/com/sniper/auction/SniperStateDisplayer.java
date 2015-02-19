@@ -2,6 +2,7 @@ package pl.com.sniper.auction;
 
 import org.jivesoftware.smack.XMPPConnection;
 import pl.com.sniper.auction.sniper.SniperListener;
+import pl.com.sniper.auction.sniper.SniperSnapshot;
 import pl.com.sniper.gui.MainWindow;
 
 import java.awt.event.WindowAdapter;
@@ -14,23 +15,8 @@ public class SniperStateDisplayer implements SniperListener {
     private MainWindow ui;
 
     @Override
-    public void sniperLost() {
-        ui.showStatus(MainWindow.STATUS_LOST);
-    }
-
-    @Override
-    public void sniperBidding() {
-        ui.showStatus(MainWindow.STATUS_BIDDING);
-    }
-
-    @Override
-    public void sniperWon() {
-        ui.showStatus(MainWindow.STATUS_WON);
-    }
-
-    @Override
-    public void sniperWinning() {
-        ui.showStatus(MainWindow.STATUS_WINNING);
+    public void sniperStateChanged(SniperSnapshot sniperSnapshot) {
+        ui.sniperStatusChanged(sniperSnapshot);
     }
 
     public void startUserInterface() throws Exception {

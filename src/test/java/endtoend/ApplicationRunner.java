@@ -12,6 +12,7 @@ public class ApplicationRunner {
     public static final String SNIPER_XMPP_ID = "sniper@szczurki-komputer/Auction";
 
     private AuctionSniperDriver driver;
+    private String auctionId;
 
     public void startBiddingIn(final FakeAuctionServer auction) {
         Thread thread = new Thread("Test Application") {
@@ -31,6 +32,8 @@ public class ApplicationRunner {
 
         driver = new AuctionSniperDriver(1000);
         driver.showsSniperStatus(MainWindow.STATUS_JOINING);
+
+        this.auctionId = auction.getItemId();
     }
 
     public void showsSniperHasLostAuction() {
@@ -43,15 +46,15 @@ public class ApplicationRunner {
         }
     }
 
-    public void hasShownSniperIsBidding() {
-        driver.showsSniperStatus(MainWindow.STATUS_BIDDING);
+    public void hasShownSniperIsBidding(int lastPrice, int lastBid) {
+        driver.showsSniperStatus(auctionId, lastPrice, lastBid, MainWindow.STATUS_BIDDING);
     }
 
-    public void showSniperHasWonAuction() {
-        driver.showsSniperStatus(MainWindow.STATUS_WON);
+    public void showSniperHasWonAuction(int lastPrice) {
+        driver.showsSniperStatus(auctionId, lastPrice, lastPrice,  MainWindow.STATUS_WON);
     }
 
-    public void hasShownSniperIsWinning() {
-        driver.showsSniperStatus(MainWindow.STATUS_WINNING);
+    public void hasShownSniperIsWinning(int winningBid) {
+        driver.showsSniperStatus(auctionId, winningBid, winningBid, MainWindow.STATUS_WINNING);
     }
 }

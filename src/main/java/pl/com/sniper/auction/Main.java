@@ -15,6 +15,7 @@ import java.util.Deque;
 public class Main {
 
     public static final String SNIPER_STATUS_NAME = "Sniper Status";
+    public static final String SNIPER_TABLE_NAME = "Sniper Table";
 
     public static final String AUCTION_RESOURCE = "Auction";
     private static final String ITEM_ID_AS_LOGIN = "auction-%s";
@@ -52,7 +53,7 @@ public class Main {
                 NO_LISTENER);
 
         Auction auction = new XMPPAuction(chat);
-        AuctionMessageTranslator listener = new AuctionMessageTranslator(new AuctionSniper(auction, sniperStateDisplayer), connection.getUser());
+        AuctionMessageTranslator listener = new AuctionMessageTranslator(new AuctionSniper(itemId, auction, sniperStateDisplayer), connection.getUser());
 
         chat.addMessageListener(listener);
 
