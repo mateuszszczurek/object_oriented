@@ -15,6 +15,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static pl.com.sniper.gui.SnipersTableModel.stateFor;
 
 public class SnipersTableModelTest {
 
@@ -33,15 +34,22 @@ public class SnipersTableModelTest {
 
     @Test
     public void setsSniperValuesInColumns() {
-        snipersTableModel.updateSniperState(new SniperSnapshot("item id", 1000, 100, SniperStatus.BIDDING));
+        snipersTableModel.sniperStateChanged(new SniperSnapshot("item id", 1000, 100, SniperStatus.BIDDING));
 
         assertColumnEquals(Column.ITEM_IDENTIFIER, "item id");
         assertColumnEquals(Column.LAST_PRICE, 1000);
         assertColumnEquals(Column.LAST_BID, 100);
-        assertColumnEquals(Column.SNIPER_STATE, MainWindow.STATUS_BIDDING);
+        assertColumnEquals(Column.SNIPER_STATE, stateFor(SniperStatus.BIDDING));
 
         verify(listener).tableChanged(argThat(aRowChangedEvent()));
 
+    }
+
+    @Test
+    public void setUpColumnHeaders() {
+        for(Column column : Column.values()) {
+            assertThat(snipersTableModel.getColumnName(column.ordinal()), equalTo(column.name));
+        }
     }
 
     private Matcher<TableModelEvent> aRowChangedEvent() {
