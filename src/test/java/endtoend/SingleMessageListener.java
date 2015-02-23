@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
@@ -25,8 +26,7 @@ public class SingleMessageListener implements MessageListener {
 
     public void receivesAMessageThat(Matcher<? super String> matcher) throws InterruptedException {
         Message message = messages.poll(5, TimeUnit.SECONDS);
-        assertThat("Message", message, is(notNullValue()));
-        assertThat(message.getBody(), matcher);
+        assertThat(message, hasProperty("body", matcher));
 
     }
 

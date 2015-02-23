@@ -73,15 +73,6 @@ public class FakeAuctionServer {
         currentChat.sendMessage(new AuctionEvent(price, minimalIncrement, auctioneer).toMessage());
     }
 
-    public void announceWinner(String auctioneer) throws XMPPException {
-        currentChat.sendMessage(format("SOLVersion: 1.1; Event: WON; " +
-                "Bidder: %s;", auctioneer));
-    }
-
-    public void hasShownSniperIsWinning() {
-
-    }
-
     private class AuctionEvent {
 
         private final int price;

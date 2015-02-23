@@ -27,10 +27,6 @@ public class AuctionSniperDriver extends JFrameDriver{
                         new AWTEventQueueProber(timeoutInMillis, 100));
     }
 
-    public void showsSniperStatus(String statusText) {
-        new JTableDriver(this).hasCell(withLabelText(equalTo(statusText)));
-    }
-
     public void showsSniperStatus(String itemId, int lastPrice, int lastBid, String status) {
         JTableDriver tableDriver = new JTableDriver(this);
 

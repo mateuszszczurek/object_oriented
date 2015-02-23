@@ -7,8 +7,7 @@ import pl.com.sniper.auction.sniper.SniperStatus;
 
 import javax.swing.table.AbstractTableModel;
 
-public class
-        SnipersTableModel extends AbstractTableModel implements SniperListener {
+public class SnipersTableModel extends AbstractTableModel implements SniperListener {
 
     private static String[] STATUS_TEXT = {"Joining", "Winning",
             "Bidding", "Won", "Lost"};

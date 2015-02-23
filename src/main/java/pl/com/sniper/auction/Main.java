@@ -13,6 +13,7 @@ import pl.com.sniper.gui.SnipersTableModel;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.stream.Stream;
 
 import static javax.swing.SwingUtilities.invokeAndWait;
 
@@ -91,6 +92,7 @@ public class Main {
     public Main() throws Exception {
         startUserInterface();
     }
+
 
 
 }
