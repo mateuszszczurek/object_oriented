@@ -44,7 +44,6 @@ public class ApplicationRunner {
         for (FakeAuctionServer auction : auctions) {
             driver.showsSniperStatus(auction.getItemId(), 0, 0, stateFor(SniperStatus.JOINING));
         }
-//        stream(auctions).forEach(auction -> driver.showsSniperStatus(auction.getItemId(), 0, 0, stateFor(SniperStatus.JOINING)));
 
     }
 

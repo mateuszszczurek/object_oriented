@@ -6,16 +6,21 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import pl.com.sniper.auction.events.AuctionMessageTranslator;
 import pl.com.sniper.auction.sniper.Auction;
+import pl.com.sniper.auction.sniper.SniperSnapshot;
 import pl.com.sniper.auction.sniper.XMPPAuction;
 import pl.com.sniper.auction.sniper.AuctionSniper;
 import pl.com.sniper.gui.MainWindow;
 import pl.com.sniper.gui.SnipersTableModel;
 
+import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.lang.reflect.InvocationTargetException;
 import java.util.stream.Stream;
 
 import static javax.swing.SwingUtilities.invokeAndWait;
+import static javax.swing.SwingUtilities.invokeLater;
+import static pl.com.sniper.auction.sniper.SniperSnapshot.joining;
 
 public class Main {
 
@@ -25,7 +30,6 @@ public class Main {
     public static final int ARG_HOSTNAME = 0;
     public static final int ARG_USERNAME = 1;
     public static final int ARG_PASSWORD = 2;
-    public static final int ARG_ITEM_ID = 3;
 
     public static final String BID_COMMAND_FORMAT = "SOLVersion: 1.1; Command: BID; Price: %s;";
     private static final MessageListener NO_LISTENER = null;
@@ -53,17 +57,21 @@ public class Main {
         final String host = args[ARG_HOSTNAME];
         final String sniperId = args[ARG_USERNAME];
         final String sniperPassword = args[ARG_PASSWORD];
-        final String itemId = args[ARG_ITEM_ID];
 
         XMPPConnection connection = connection(host, sniperId, sniperPassword);
 
         Main main = new Main();
-        main.joinAuction(itemId, connection);
+
+        for(int i = 3; i < args.length ; i++) {
+            main.joinAuction(args[i], connection);
+        }
+
+        main.disconnectWhenUICloses(connection);
     }
 
-    private void joinAuction(String itemId, XMPPConnection connection) throws XMPPException {
+    private void joinAuction(String itemId, XMPPConnection connection) throws Exception {
 
-        disconnectWhenUICloses(connection);
+        safelyAddItemToModel(itemId);
 
         Chat chat = connection.getChatManager().createChat(auctionId(itemId, connection),
                 NO_LISTENER);
@@ -76,6 +84,10 @@ public class Main {
         this.notToBeGCd = chat;
 
         auction.join();
+    }
+
+    private void safelyAddItemToModel(String itemId) throws InvocationTargetException, InterruptedException {
+        invokeAndWait(() -> snipers.addSniper(joining(itemId)));
     }
 
     private static String auctionId(String auctionId, XMPPConnection connection) {

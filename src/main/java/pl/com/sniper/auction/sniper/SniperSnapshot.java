@@ -30,6 +30,10 @@ public class SniperSnapshot {
         this.status = status;
     }
 
+    public boolean isSameItemAs(SniperSnapshot other) {
+        return this.itemId.equals(other.itemId);
+    }
+
     @Override
     public int hashCode() {
         return HashCodeBuilder.reflectionHashCode(this);
