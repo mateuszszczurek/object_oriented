@@ -1,6 +1,7 @@
 package endtoend;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 public class AuctionSniperEndToEndTest {
@@ -8,6 +9,11 @@ public class AuctionSniperEndToEndTest {
     private final FakeAuctionServer auction = new FakeAuctionServer("item-54321");
     private final FakeAuctionServer auction2 = new FakeAuctionServer("item-12345");
     private final ApplicationRunner application = new ApplicationRunner();
+
+    @Before
+    public void setUpWindowClicker() {
+        System.setProperty("com.objogate.wl.keyboard", "GB");
+    }
 
     @Test
     public void sniperJoinsAuctionUntilAuctionCloses() throws Exception {

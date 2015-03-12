@@ -5,7 +5,6 @@ import pl.com.sniper.auction.sniper.SniperStatus;
 import pl.com.sniper.gui.MainWindow;
 
 import static endtoend.FakeAuctionServer.XMPP_HOSTNAME;
-import static java.util.Arrays.stream;
 import static pl.com.sniper.gui.SnipersTableModel.stateFor;
 
 public class ApplicationRunner {
@@ -17,7 +16,7 @@ public class ApplicationRunner {
     private AuctionSniperDriver driver;
 
     public void startBiddingIn(final FakeAuctionServer ... auctions) {
-        startSniper(auctions);
+        startSniper();
 
         for (FakeAuctionServer auction : auctions) {
             final String itemId = auction.getItemId();
@@ -27,13 +26,13 @@ public class ApplicationRunner {
 
     }
 
-    private void startSniper(final FakeAuctionServer[] auctions) {
+    private void startSniper() {
         Thread thread = new Thread("Test Application") {
 
             @Override
             public void run() {
                 try {
-                    Main.main(args(auctions));
+                    Main.main(args());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -48,18 +47,12 @@ public class ApplicationRunner {
         driver.hasColumnTitles();
     }
 
-    private String[] args(FakeAuctionServer[] auctions) {
-        String[] auctionNames = stream(auctions)
-                .map(auction -> auction.getItemId())
-                .toArray(size -> new String[size]);
+    private String[] args() {
 
-        String[] args = new String[auctionNames.length + 3];
+        String[] args = new String[3];
         args[0] = XMPP_HOSTNAME;
         args[1] = SNIPER_ID;
         args[2] = SNIPER_PASSWORD;
-        for (int i = 0; i < auctionNames.length; i++) {
-            args[3 + i] = auctionNames[i];
-        }
 
         return args;
     }

@@ -1,9 +1,9 @@
 package pl.com.sniper.gui;
 
-import pl.com.sniper.auction.sniper.SniperSnapshot;
-
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainWindow extends JFrame {
 
@@ -12,6 +12,7 @@ public class MainWindow extends JFrame {
     public static final String JOIN_BUTTON_NAME = "Join";
     public static final String NEW_ITEM_ID_NAME = "Auction Id";
 
+    private final List<UserRequestListener> userEventListeners = new ArrayList<>();
     private final SnipersTableModel snipers;
 
     public MainWindow(SnipersTableModel snipers) throws HeadlessException {
@@ -19,7 +20,6 @@ public class MainWindow extends JFrame {
         this.snipers = snipers;
         setName(MAIN_WINDOW_NAME);
         fillContentPane(makeSnipersTable(), makeControls());
-        makeControls();
         pack();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
@@ -34,6 +34,11 @@ public class MainWindow extends JFrame {
 
         JButton joinAuctionButton  = new JButton("Join Auction");
         joinAuctionButton.setName(JOIN_BUTTON_NAME);
+        joinAuctionButton.addActionListener(
+                 e -> notifyUsers(itemIdField.getText())
+
+        );
+
         controls.add(joinAuctionButton);
 
         return controls;
@@ -42,14 +47,22 @@ public class MainWindow extends JFrame {
     private void fillContentPane(JTable snipersTableModel, JPanel controls) {
         final Container contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
+        contentPane.add(controls, BorderLayout.NORTH);
         contentPane.add(new JScrollPane(snipersTableModel), BorderLayout.CENTER);
-        contentPane.add(controls);
     }
 
     private JTable makeSnipersTable() {
         final JTable table = new JTable(snipers);
         table.setName(SNIPERS_TABLE_NAME);
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         return table;
     }
 
+    private void notifyUsers(String auctionItem) {
+        userEventListeners.forEach(listener -> listener.joinAuction(auctionItem));
+    }
+
+    public void addUserRequestListener(UserRequestListener userRequestListener) {
+        userEventListeners.add(userRequestListener);
+    }
 }
