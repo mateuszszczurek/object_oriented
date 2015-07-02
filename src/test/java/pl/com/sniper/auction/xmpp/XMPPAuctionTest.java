@@ -2,9 +2,9 @@ package pl.com.sniper.auction.xmpp;
 
 import endtoend.ApplicationRunner;
 import endtoend.FakeAuctionServer;
-import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.junit.Test;
+import pl.com.sniper.auction.XMPPAuctionHouse;
 import pl.com.sniper.auction.events.AuctionEventListener;
 import pl.com.sniper.auction.sniper.Auction;
 
@@ -19,7 +19,8 @@ public class XMPPAuctionTest {
         FakeAuctionServer fakeAuctionServer = new FakeAuctionServer(itemId);
         fakeAuctionServer.startSellingItem();
 
-        Auction auction = new XMPPAuction(connection(), fakeAuctionServer.getItemId());
+        XMPPAuctionHouse xmppAuctionHouse = XMPPAuctionHouse.connect("localhost", "sniper", "sniper");
+        Auction auction = xmppAuctionHouse.auctionFor(itemId);
 
         AuctionEventListener listener =  mock(AuctionEventListener.class);
         auction.addMessageListener(listener);
@@ -30,13 +31,6 @@ public class XMPPAuctionTest {
         fakeAuctionServer.announceClosed();
 
         verify(listener, timeout(2000)).onAuctionClosed();
-    }
-
-    private XMPPConnection connection() throws XMPPException {
-        XMPPConnection connection = new XMPPConnection("localhost");
-        connection.connect();
-        connection.login("sniper", "sniper", XMPPAuction.AUCTION_RESOURCE);
-        return connection;
     }
 
 }
