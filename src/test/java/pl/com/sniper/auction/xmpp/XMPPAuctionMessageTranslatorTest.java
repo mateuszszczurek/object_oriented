@@ -1,10 +1,11 @@
-package pl.com.sniper.auction.events;
+package pl.com.sniper.auction.xmpp;
 
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.packet.Message;
 import org.junit.Test;
+import pl.com.sniper.auction.events.AuctionEventListener;
+import pl.com.sniper.auction.xmpp.AuctionMessageTranslator;
 
-import static java.lang.String.format;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static pl.com.sniper.auction.events.AuctionEventListener.PriceSource.FromOtherBidder;

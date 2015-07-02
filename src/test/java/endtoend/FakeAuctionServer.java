@@ -6,13 +6,10 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 import pl.com.sniper.auction.Main;
-import pl.com.sniper.auction.sniper.XMPPAuction;
+import pl.com.sniper.auction.xmpp.XMPPAuction;
 
 import static java.lang.String.format;
-import static org.hamcrest.CoreMatchers.anything;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 public class FakeAuctionServer {

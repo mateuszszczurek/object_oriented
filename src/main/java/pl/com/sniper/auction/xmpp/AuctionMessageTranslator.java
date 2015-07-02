@@ -1,8 +1,9 @@
-package pl.com.sniper.auction.events;
+package pl.com.sniper.auction.xmpp;
 
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.packet.Message;
+import pl.com.sniper.auction.events.AuctionEventListener;
 
 import java.util.HashMap;
 
