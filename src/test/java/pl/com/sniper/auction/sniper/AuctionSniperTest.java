@@ -1,11 +1,12 @@
 package pl.com.sniper.auction.sniper;
 
+import org.junit.Before;
 import org.junit.Test;
 import pl.com.sniper.auction.events.AuctionEventListener;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static pl.com.sniper.auction.sniper.SniperSnapshot.joining;
 import static pl.com.sniper.auction.sniper.SniperStatus.*;
 
 public class AuctionSniperTest {
@@ -15,7 +16,12 @@ public class AuctionSniperTest {
     private final Auction auction = mock(Auction.class);
     private final SniperListener sniperListener = mock(SniperListener.class);
 
-    private final AuctionSniper auctionSniper = new AuctionSniper(ITEM_ID, auction, sniperListener);
+    private final AuctionSniper auctionSniper = new AuctionSniper(joining(ITEM_ID), auction);
+
+    @Before
+    public void setUp() throws Exception {
+        auctionSniper.addSniperListener(sniperListener);
+    }
 
     @Test
     public void reportsIsWinningWhenCurrentPriceComesFromSniper() {

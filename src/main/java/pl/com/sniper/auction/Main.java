@@ -1,18 +1,12 @@
 package pl.com.sniper.auction;
 
-import pl.com.sniper.auction.sniper.Auction;
-import pl.com.sniper.auction.sniper.AuctionSniper;
 import pl.com.sniper.gui.MainWindow;
 import pl.com.sniper.gui.SnipersTableModel;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collection;
 
 import static javax.swing.SwingUtilities.invokeAndWait;
-import static pl.com.sniper.auction.sniper.SniperSnapshot.joining;
 
 public class Main {
 
@@ -22,11 +16,8 @@ public class Main {
     public static final int ARG_PASSWORD = 2;
     public static final String BID_COMMAND_FORMAT = "SOLVersion: 1.1; Command: BID; Price: %s;";
 
-    private final SnipersTableModel snipers = new SnipersTableModel();
-
-    @SuppressWarnings("unused")
-    private Collection<Auction> notToBeGCd = new ArrayList<>();
     private MainWindow ui;
+    private final SnipersTableModel snipers = new SnipersTableModel();
 
 
     public void startUserInterface() throws Exception {
@@ -61,26 +52,7 @@ public class Main {
     }
 
     private void registerUserEventListener(final AuctionHouse auctionFactory) {
-        ui.addUserRequestListener(itemId -> {
-            try {
-                joinAuction(itemId, auctionFactory);
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    private void joinAuction(String itemId, AuctionHouse auctionFactory) throws InvocationTargetException, InterruptedException {
-        snipers.addSniper(joining(itemId));
-
-        Auction auction = auctionFactory.auctionFor(itemId);
-        auction.addMessageListener(new AuctionSniper(itemId, auction, new SwingThreadSniperListener(snipers)));
-        auction.join();
-
-        notToBeGCd.add(auction);
-
+        ui.addUserRequestListener(new SnipersLauncher(auctionFactory, snipers));
     }
 
 }

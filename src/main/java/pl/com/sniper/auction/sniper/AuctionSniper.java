@@ -2,20 +2,22 @@ package pl.com.sniper.auction.sniper;
 
 import pl.com.sniper.auction.events.AuctionEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static pl.com.sniper.auction.events.AuctionEventListener.PriceSource.FromOtherBidder;
 import static pl.com.sniper.auction.events.AuctionEventListener.PriceSource.FromSniper;
 
 public class AuctionSniper implements AuctionEventListener {
 
     private final Auction auction;
-    private final SniperListener sniperListener;
+    private final List<SniperListener> sniperListener = new ArrayList<>();
 
     private SniperSnapshot snapshot;
 
-    public AuctionSniper(String itemId, Auction auction, SniperListener sniperListener) {
+    public AuctionSniper(SniperSnapshot snapshot, Auction auction) {
         this.auction = auction;
-        this.sniperListener = sniperListener;
-        this.snapshot = SniperSnapshot.joining(itemId);
+        this.snapshot = snapshot;
         notifyChange();
     }
 
@@ -27,7 +29,7 @@ public class AuctionSniper implements AuctionEventListener {
 
     @Override
     public void currentPrice(int currentPrice, int increment, PriceSource priceSource) {
-        if(FromOtherBidder.equals(priceSource)) {
+        if (FromOtherBidder.equals(priceSource)) {
             int bid = currentPrice + increment;
             auction.bid(bid);
             snapshot = snapshot.bidding(currentPrice, bid);
@@ -39,7 +41,14 @@ public class AuctionSniper implements AuctionEventListener {
     }
 
     private void notifyChange() {
-        sniperListener.sniperStateChanged(snapshot);
+        sniperListener.forEach(listener -> listener.sniperStateChanged(snapshot));
     }
 
+    public SniperSnapshot getSnapshot() {
+        return snapshot;
+    }
+
+    public void addSniperListener(SniperListener sniperListener) {
+        this.sniperListener.add(sniperListener);
+    }
 }

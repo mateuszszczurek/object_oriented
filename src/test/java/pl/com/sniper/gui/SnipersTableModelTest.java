@@ -6,6 +6,8 @@ import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import pl.com.sniper.auction.sniper.Auction;
+import pl.com.sniper.auction.sniper.AuctionSniper;
 import pl.com.sniper.auction.sniper.SniperSnapshot;
 import pl.com.sniper.mistakes.Defect;
 
@@ -16,16 +18,15 @@ import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.argThat;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 public class SnipersTableModelTest {
 
     private TableModelListener listener = mock(TableModelListener.class);
+    private Auction auction = mock(Auction.class);
     private final SnipersTableModel snipersTableModel = new SnipersTableModel();
 
     @Before
@@ -43,7 +44,7 @@ public class SnipersTableModelTest {
         SniperSnapshot joining = SniperSnapshot.joining("item id");
         SniperSnapshot bidding = joining.bidding(1000, 100);
 
-        snipersTableModel.addSniper(joining);
+        snipersTableModel.addSniper(auctionSniperFor(joining));
         snipersTableModel.sniperStateChanged(bidding);
 
         ArgumentCaptor<TableModelEvent> captor = ArgumentCaptor.forClass(TableModelEvent.class);
@@ -88,7 +89,7 @@ public class SnipersTableModelTest {
     public void notifiesListenerWhenAddingASniper() {
         SniperSnapshot sniperSnapshot = SniperSnapshot.joining("item123");
 
-        snipersTableModel.addSniper(sniperSnapshot);
+        snipersTableModel.addSniper(auctionSniperFor(sniperSnapshot));
 
         assertThat(snipersTableModel.getRowCount(), equalTo(1));
         assertRowMatchesSnapshot(0, sniperSnapshot);
@@ -100,8 +101,8 @@ public class SnipersTableModelTest {
         SniperSnapshot sniperSnapshot = SniperSnapshot.joining("item123");
         SniperSnapshot secondSniperSnapshot = SniperSnapshot.joining("item234");
 
-        snipersTableModel.addSniper(sniperSnapshot);
-        snipersTableModel.addSniper(secondSniperSnapshot);
+        snipersTableModel.addSniper(auctionSniperFor(sniperSnapshot));
+        snipersTableModel.addSniper(auctionSniperFor(secondSniperSnapshot));
 
         assertEquals("item123", cellValue(0, Column.ITEM_IDENTIFIER));
         assertEquals("item234", cellValue(1, Column.ITEM_IDENTIFIER));
@@ -112,12 +113,16 @@ public class SnipersTableModelTest {
         SniperSnapshot sniperSnapshot = SniperSnapshot.joining("item123");
         SniperSnapshot secondSniperSnapshot = SniperSnapshot.joining("item234");
 
-        snipersTableModel.addSniper(sniperSnapshot);
-        snipersTableModel.addSniper(secondSniperSnapshot);
+        snipersTableModel.addSniper(auctionSniperFor(sniperSnapshot));
+        snipersTableModel.addSniper(auctionSniperFor(secondSniperSnapshot));
 
         verify(listener, times(1)).tableChanged(argThat(aChangeInRow(0)));
         verify(listener, times(1)).tableChanged(argThat(aChangeInRow(1)));
 
+    }
+
+    private AuctionSniper auctionSniperFor(SniperSnapshot sniperSnapshot) {
+        return new AuctionSniper(sniperSnapshot, auction);
     }
 
     private Object cellValue(int row, Column column) {
