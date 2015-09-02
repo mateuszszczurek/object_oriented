@@ -39,7 +39,7 @@ public class XMPPAuction implements Auction {
     }
 
     @Override
-    public void addMessageListener(AuctionEventListener listener) {
+    public void addAuctionEventListener(AuctionEventListener listener) {
         this.auctionEventListeners.addListener(listener);
     }
 

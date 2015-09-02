@@ -1,31 +1,51 @@
 package pl.com.sniper.auction;
 
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
+import org.junit.Test;
+import pl.com.sniper.auction.sniper.Auction;
+import pl.com.sniper.auction.sniper.AuctionSniper;
+
+import static org.mockito.Mockito.*;
+
 public class SnipersLauncherTest {
 
-    // todo - leaving in for later, mockito does not support order of execution checks
 
-//    @Test
-//    public void add_new_sniper_to_collector_and_then_joins_auction() {
-//        final String itemId = "item 123";
-//        SniperSnapshot joiningState = joining("item 123");
-//
-//        AuctionHouse auctionHouse = mock(AuctionHouse.class);
-//        Auction auction = mock(Auction.class);
-//        SniperCollector sniperCollector = mock(SnipersTableModel.class);
-//        SnipersLauncher snipersLauncher = new SnipersLauncher(auctionHouse, sniperCollector);
-//
-//        when(auctionHouse.auctionFor(itemId)).thenReturn(auction);
-//
-//        snipersLauncher.joinAuction(itemId);
-//        Class<SniperListener> spy = spy(SniperListener.class);
-//        verify(auctionHouse.auctionFor(itemId));
-//        verify(auction.addMessageListener(sniperForItem(itemId));
-//        verify(sniperCollector).addSniper(joiningState);
-//
-//    }
+    private final Auction auction = mock(Auction.class);
+    private final SniperCollector sniperCollector = mock(SniperCollector.class);
+    private final AuctionHouse auctionHouse = mock(AuctionHouse.class);
 
-//    private AuctionEventListener sniperForItem(String itemId) {
-//        new AuctionSniper(SniperSnapshot.);
-//    }
+    @Test
+    public void add_new_sniper_to_collector_and_then_joins_auction() {
+        final String itemId = "item 123";
+
+        when(auctionHouse.auctionFor(itemId)).thenReturn(auction);
+
+        SnipersLauncher snipersLauncher = new SnipersLauncher(auctionHouse, sniperCollector);
+
+        snipersLauncher.joinAuction(itemId);
+
+        verify(auctionHouse).auctionFor(itemId);
+        verify(auction).addAuctionEventListener(argThat(sniperForItem(itemId)));
+        verify(sniperCollector).addSniper(argThat(sniperForItem(itemId)));
+        verify(auction).join();
+
+    }
+
+    private Matcher<AuctionSniper> sniperForItem(String itemId) {
+        return new TypeSafeMatcher<AuctionSniper>() {
+
+            @Override
+            public void describeTo(Description description) {
+
+            }
+
+            @Override
+            protected boolean matchesSafely(AuctionSniper item) {
+                return item.getSnapshot().itemId.equals(itemId);
+            }
+        };
+    }
 
 }

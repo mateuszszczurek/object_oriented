@@ -23,7 +23,7 @@ public class XMPPAuctionTest {
         Auction auction = xmppAuctionHouse.auctionFor(itemId);
 
         AuctionEventListener listener =  mock(AuctionEventListener.class);
-        auction.addMessageListener(listener);
+        auction.addAuctionEventListener(listener);
 
         auction.join();
 
