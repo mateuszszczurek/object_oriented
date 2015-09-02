@@ -1,7 +1,6 @@
 package pl.com.sniper.auction;
 
 import pl.com.sniper.gui.MainWindow;
-import pl.com.sniper.gui.SnipersTableModel;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -17,7 +16,7 @@ public class Main {
     public static final String BID_COMMAND_FORMAT = "SOLVersion: 1.1; Command: BID; Price: %s;";
 
     private MainWindow ui;
-    private final SnipersTableModel snipers = new SnipersTableModel();
+    private final SniperPortfolio snipers = new SniperPortfolio();
 
 
     public void startUserInterface() throws Exception {

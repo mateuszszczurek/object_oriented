@@ -1,5 +1,7 @@
 package pl.com.sniper.gui;
 
+import pl.com.sniper.auction.SniperPortfolio;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -13,13 +15,11 @@ public class MainWindow extends JFrame {
     public static final String NEW_ITEM_ID_NAME = "Auction Id";
 
     private final List<UserRequestListener> userEventListeners = new ArrayList<>();
-    private final SnipersTableModel snipers;
 
-    public MainWindow(SnipersTableModel snipers) throws HeadlessException {
+    public MainWindow(SniperPortfolio snipers) throws HeadlessException {
         super(MAIN_WINDOW_NAME);
-        this.snipers = snipers;
         setName(MAIN_WINDOW_NAME);
-        fillContentPane(makeSnipersTable(), makeControls());
+        fillContentPane(makeSnipersTable(snipers), makeControls());
         pack();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
@@ -51,8 +51,10 @@ public class MainWindow extends JFrame {
         contentPane.add(new JScrollPane(snipersTableModel), BorderLayout.CENTER);
     }
 
-    private JTable makeSnipersTable() {
-        final JTable table = new JTable(snipers);
+    private JTable makeSnipersTable(SniperPortfolio portfolio) {
+        SnipersTableModel snipersTableModel = new SnipersTableModel();
+        portfolio.registerPortfolioListener(snipersTableModel);
+        final JTable table = new JTable(snipersTableModel);
         table.setName(SNIPERS_TABLE_NAME);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         return table;

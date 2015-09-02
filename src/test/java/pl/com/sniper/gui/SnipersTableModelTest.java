@@ -44,7 +44,7 @@ public class SnipersTableModelTest {
         SniperSnapshot joining = SniperSnapshot.joining("item id");
         SniperSnapshot bidding = joining.bidding(1000, 100);
 
-        snipersTableModel.addSniper(auctionSniperFor(joining));
+        snipersTableModel.sniperAdded(joining);
         snipersTableModel.sniperStateChanged(bidding);
 
         ArgumentCaptor<TableModelEvent> captor = ArgumentCaptor.forClass(TableModelEvent.class);
@@ -89,7 +89,7 @@ public class SnipersTableModelTest {
     public void notifiesListenerWhenAddingASniper() {
         SniperSnapshot sniperSnapshot = SniperSnapshot.joining("item123");
 
-        snipersTableModel.addSniper(auctionSniperFor(sniperSnapshot));
+        snipersTableModel.sniperAdded(sniperSnapshot);
 
         assertThat(snipersTableModel.getRowCount(), equalTo(1));
         assertRowMatchesSnapshot(0, sniperSnapshot);
@@ -101,8 +101,8 @@ public class SnipersTableModelTest {
         SniperSnapshot sniperSnapshot = SniperSnapshot.joining("item123");
         SniperSnapshot secondSniperSnapshot = SniperSnapshot.joining("item234");
 
-        snipersTableModel.addSniper(auctionSniperFor(sniperSnapshot));
-        snipersTableModel.addSniper(auctionSniperFor(secondSniperSnapshot));
+        snipersTableModel.sniperAdded(sniperSnapshot);
+        snipersTableModel.sniperAdded(secondSniperSnapshot);
 
         assertEquals("item123", cellValue(0, Column.ITEM_IDENTIFIER));
         assertEquals("item234", cellValue(1, Column.ITEM_IDENTIFIER));
@@ -113,8 +113,8 @@ public class SnipersTableModelTest {
         SniperSnapshot sniperSnapshot = SniperSnapshot.joining("item123");
         SniperSnapshot secondSniperSnapshot = SniperSnapshot.joining("item234");
 
-        snipersTableModel.addSniper(auctionSniperFor(sniperSnapshot));
-        snipersTableModel.addSniper(auctionSniperFor(secondSniperSnapshot));
+        snipersTableModel.sniperAdded(sniperSnapshot);
+        snipersTableModel.sniperAdded(secondSniperSnapshot);
 
         verify(listener, times(1)).tableChanged(argThat(aChangeInRow(0)));
         verify(listener, times(1)).tableChanged(argThat(aChangeInRow(1)));
