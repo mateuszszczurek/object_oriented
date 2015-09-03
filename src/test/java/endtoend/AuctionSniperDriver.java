@@ -1,20 +1,17 @@
 package endtoend;
 
 import com.objogate.wl.swing.AWTEventQueueProber;
-import com.objogate.wl.swing.ComponentSelector;
 import com.objogate.wl.swing.driver.*;
 import com.objogate.wl.swing.gesture.GesturePerformer;
 import pl.com.sniper.gui.MainWindow;
-import pl.com.sniper.auction.Main;
 
 import javax.swing.*;
 import javax.swing.table.JTableHeader;
-import javax.swing.text.JTextComponent;
 
 import static com.objogate.wl.swing.matcher.IterableComponentsMatcher.matching;
 import static com.objogate.wl.swing.matcher.JLabelTextMatcher.withLabelText;
 import static java.lang.String.valueOf;
-import static org.hamcrest.Matchers.equalTo;
+import static pl.com.sniper.gui.MainWindow.NEW_ITEM_ID_NAME;
 
 public class AuctionSniperDriver extends JFrameDriver{
 
@@ -42,8 +39,20 @@ public class AuctionSniperDriver extends JFrameDriver{
     }
 
     public void startBiddingFor(String itemId) {
-        itemIdField().replaceAllText(itemId);
+        textField(NEW_ITEM_ID_NAME).replaceAllText(itemId);
         bidButton().click();
+    }
+
+    public void startBiddingFor(String itemId, int stopPrice) {
+        textField(NEW_ITEM_ID_NAME).replaceAllText(itemId);
+//        textField(STOP_PRICE).replaceAllText(valueOf(stopPrice));
+        bidButton().click();
+    }
+
+    private JTextFieldDriver textField(String fieldName) {
+        JTextFieldDriver newItemid = new JTextFieldDriver(this, JTextField.class, named(fieldName));
+        newItemid.focusWithMouse();
+        return newItemid;
     }
 
     private JButtonDriver bidButton() {
@@ -51,7 +60,7 @@ public class AuctionSniperDriver extends JFrameDriver{
     }
 
     private JTextFieldDriver itemIdField() {
-        JTextFieldDriver newItemid = new JTextFieldDriver(this, JTextField.class, named(MainWindow.NEW_ITEM_ID_NAME));
+        JTextFieldDriver newItemid = new JTextFieldDriver(this, JTextField.class, named(NEW_ITEM_ID_NAME));
         newItemid.focusWithMouse();
         return newItemid;
     }

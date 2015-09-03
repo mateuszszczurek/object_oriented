@@ -6,8 +6,6 @@ import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import pl.com.sniper.auction.sniper.Auction;
-import pl.com.sniper.auction.sniper.AuctionSniper;
 import pl.com.sniper.auction.sniper.SniperSnapshot;
 import pl.com.sniper.mistakes.Defect;
 
@@ -26,7 +24,6 @@ import static org.mockito.Mockito.*;
 public class SnipersTableModelTest {
 
     private TableModelListener listener = mock(TableModelListener.class);
-    private Auction auction = mock(Auction.class);
     private final SnipersTableModel snipersTableModel = new SnipersTableModel();
 
     @Before
@@ -119,10 +116,6 @@ public class SnipersTableModelTest {
         verify(listener, times(1)).tableChanged(argThat(aChangeInRow(0)));
         verify(listener, times(1)).tableChanged(argThat(aChangeInRow(1)));
 
-    }
-
-    private AuctionSniper auctionSniperFor(SniperSnapshot sniperSnapshot) {
-        return new AuctionSniper(sniperSnapshot, auction);
     }
 
     private Object cellValue(int row, Column column) {

@@ -19,5 +19,7 @@ public class ColumnTest {
         assertThat(Column.SNIPER_STATE.valueIn(sniperSnapshot), equalTo("Bidding"));
     }
 
+    //todo add tests for other states
+
 
 }
