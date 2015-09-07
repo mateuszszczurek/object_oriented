@@ -4,6 +4,7 @@ import com.objogate.wl.swing.probe.ValueMatcherProbe;
 import endtoend.AuctionSniperDriver;
 import org.junit.Before;
 import org.junit.Test;
+import pl.com.sniper.auction.Item;
 import pl.com.sniper.auction.SniperPortfolio;
 import pl.com.sniper.gui.MainWindow;
 
@@ -22,14 +23,12 @@ public class MainWindowTest {
 
     @Test
     public void makesUserRequestWhenJoinButtonClicked() {
-        final ValueMatcherProbe<String> buttonProbe = new ValueMatcherProbe<>(equalTo("an item id"), "join request");
+        final ValueMatcherProbe<Item> itemProbe = new ValueMatcherProbe<>(equalTo(new Item(100, "an item id")), "join request");
 
-        mainWindow.addUserRequestListener(
-                buttonProbe::setReceivedValue
-        );
+        mainWindow.addUserRequestListener(itemProbe::setReceivedValue);
 
-        sniperDriver.startBiddingFor("an item id");
-        sniperDriver.check(buttonProbe);
+        sniperDriver.startBiddingFor("an item id", 100);
+        sniperDriver.check(itemProbe);
     }
 
 }

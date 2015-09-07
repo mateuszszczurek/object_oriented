@@ -24,16 +24,16 @@ public class SnipersLauncherTest {
 
         SnipersLauncher snipersLauncher = new SnipersLauncher(auctionHouse, sniperCollector);
 
-        snipersLauncher.joinAuction(itemId);
+        snipersLauncher.joinAuction(new Item(Integer.MAX_VALUE, itemId));
 
         verify(auctionHouse).auctionFor(itemId);
-        verify(auction).addAuctionEventListener(argThat(sniperForItem(itemId)));
-        verify(sniperCollector).addSniper(argThat(sniperForItem(itemId)));
+        verify(auction).addAuctionEventListener(argThat(sniperForItem(new Item(Integer.MAX_VALUE, itemId))));
+        verify(sniperCollector).addSniper(argThat(sniperForItem(new Item(Integer.MAX_VALUE, itemId))));
         verify(auction).join();
 
     }
 
-    private Matcher<AuctionSniper> sniperForItem(String itemId) {
+    private Matcher<AuctionSniper> sniperForItem(Item theItem) {
         return new TypeSafeMatcher<AuctionSniper>() {
 
             @Override
@@ -43,7 +43,7 @@ public class SnipersLauncherTest {
 
             @Override
             protected boolean matchesSafely(AuctionSniper item) {
-                return item.getSnapshot().itemId.equals(itemId);
+                return item.getSnapshot().item.equals(theItem);
             }
         };
     }

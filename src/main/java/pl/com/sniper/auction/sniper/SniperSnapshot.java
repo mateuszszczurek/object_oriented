@@ -3,35 +3,39 @@ package pl.com.sniper.auction.sniper;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import pl.com.sniper.auction.Item;
 
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
 public class SniperSnapshot {
 
-    public final String itemId;
+    public final Item item;
     public final int lastPrice;
     public final int lastBid;
 
     public final SniperStatus status;
 
     public SniperSnapshot bidding(int lastPrice, int lastBid) {
-        return new SniperSnapshot(itemId, lastPrice, lastBid, SniperStatus.BIDDING);
+        return new SniperSnapshot(item, lastPrice, lastBid, SniperStatus.BIDDING);
     }
 
     public SniperSnapshot winning(int winningBid) {
-        return new SniperSnapshot(itemId, winningBid, winningBid, SniperStatus.WINNING);
+        return new SniperSnapshot(item, winningBid, winningBid, SniperStatus.WINNING);
     }
 
-    public SniperSnapshot(String itemId, int lastPrice, int lastBid, SniperStatus status) {
-        this.itemId = itemId;
+    public SniperSnapshot loosing(int lastPrice, int lastBid) {
+        return new SniperSnapshot(item, lastPrice, lastBid, SniperStatus.LOOSING);
+    }
+
+    public SniperSnapshot(Item item, int lastPrice, int lastBid, SniperStatus status) {
+        this.item = item;
         this.lastPrice = lastPrice;
         this.lastBid = lastBid;
         this.status = status;
     }
 
     public boolean isSameItemAs(SniperSnapshot other) {
-        return this.itemId.equals(other.itemId);
+        return this.item.equals(other.item);
     }
 
     @Override
@@ -49,12 +53,15 @@ public class SniperSnapshot {
         return ToStringBuilder.reflectionToString(this, MULTI_LINE_STYLE);
     }
 
-    public static SniperSnapshot joining(String itemId) {
-        return new SniperSnapshot(itemId, 0, 0, SniperStatus.JOINING);
+    public static SniperSnapshot joining(Item item) {
+        return new SniperSnapshot(item, 0, 0, SniperStatus.JOINING);
     }
 
     public SniperSnapshot closed() {
-        return new SniperSnapshot(itemId, lastPrice, lastPrice, status.whenAuctionClosed());
+        return new SniperSnapshot(item, lastPrice, lastBid, status.whenAuctionClosed());
     }
 
+    public boolean canContinueBidding(int currentPrice) {
+        return currentPrice < item.getStopPrice();
+    }
 }

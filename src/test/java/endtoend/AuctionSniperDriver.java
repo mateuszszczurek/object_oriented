@@ -12,6 +12,7 @@ import static com.objogate.wl.swing.matcher.IterableComponentsMatcher.matching;
 import static com.objogate.wl.swing.matcher.JLabelTextMatcher.withLabelText;
 import static java.lang.String.valueOf;
 import static pl.com.sniper.gui.MainWindow.NEW_ITEM_ID_NAME;
+import static pl.com.sniper.gui.MainWindow.STOP_PRICE;
 
 public class AuctionSniperDriver extends JFrameDriver{
 
@@ -38,14 +39,9 @@ public class AuctionSniperDriver extends JFrameDriver{
                 withLabelText("Last Bid"), withLabelText("State")));
     }
 
-    public void startBiddingFor(String itemId) {
-        textField(NEW_ITEM_ID_NAME).replaceAllText(itemId);
-        bidButton().click();
-    }
-
     public void startBiddingFor(String itemId, int stopPrice) {
         textField(NEW_ITEM_ID_NAME).replaceAllText(itemId);
-//        textField(STOP_PRICE).replaceAllText(valueOf(stopPrice));
+        textField(STOP_PRICE).replaceAllText(valueOf(stopPrice));
         bidButton().click();
     }
 

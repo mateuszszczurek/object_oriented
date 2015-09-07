@@ -6,6 +6,7 @@ import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import pl.com.sniper.auction.Item;
 import pl.com.sniper.auction.sniper.SniperSnapshot;
 import pl.com.sniper.mistakes.Defect;
 
@@ -38,7 +39,7 @@ public class SnipersTableModelTest {
 
     @Test
     public void setsSniperValuesInColumns() {
-        SniperSnapshot joining = SniperSnapshot.joining("item id");
+        SniperSnapshot joining = SniperSnapshot.joining(new Item(Integer.MAX_VALUE, "item id"));
         SniperSnapshot bidding = joining.bidding(1000, 100);
 
         snipersTableModel.sniperAdded(joining);
@@ -54,7 +55,7 @@ public class SnipersTableModelTest {
 
     @Test(expected = Defect.class)
     public void throwsDefectIfNoExistingSniperForAnUpdate() {
-        snipersTableModel.sniperStateChanged(SniperSnapshot.joining("random id"));
+        snipersTableModel.sniperStateChanged(SniperSnapshot.joining(new Item(Integer.MAX_VALUE, "random id")));
     }
 
     private Matcher<TableModelEvent> aChangeInRow(int rowNo) {
@@ -84,7 +85,7 @@ public class SnipersTableModelTest {
 
     @Test
     public void notifiesListenerWhenAddingASniper() {
-        SniperSnapshot sniperSnapshot = SniperSnapshot.joining("item123");
+        SniperSnapshot sniperSnapshot = SniperSnapshot.joining(new Item(Integer.MAX_VALUE, "item123"));
 
         snipersTableModel.sniperAdded(sniperSnapshot);
 
@@ -95,8 +96,8 @@ public class SnipersTableModelTest {
 
     @Test
     public void holdsSniperInAdditionOrder() {
-        SniperSnapshot sniperSnapshot = SniperSnapshot.joining("item123");
-        SniperSnapshot secondSniperSnapshot = SniperSnapshot.joining("item234");
+        SniperSnapshot sniperSnapshot = SniperSnapshot.joining(new Item(Integer.MAX_VALUE, "item123"));
+        SniperSnapshot secondSniperSnapshot = SniperSnapshot.joining(new Item(Integer.MAX_VALUE, "item234"));
 
         snipersTableModel.sniperAdded(sniperSnapshot);
         snipersTableModel.sniperAdded(secondSniperSnapshot);
@@ -107,8 +108,8 @@ public class SnipersTableModelTest {
 
     @Test
     public void updateCorrectRowForSniper() {
-        SniperSnapshot sniperSnapshot = SniperSnapshot.joining("item123");
-        SniperSnapshot secondSniperSnapshot = SniperSnapshot.joining("item234");
+        SniperSnapshot sniperSnapshot = SniperSnapshot.joining(new Item(Integer.MAX_VALUE, "item123"));
+        SniperSnapshot secondSniperSnapshot = SniperSnapshot.joining(new Item(Integer.MAX_VALUE, "item234"));
 
         snipersTableModel.sniperAdded(sniperSnapshot);
         snipersTableModel.sniperAdded(secondSniperSnapshot);

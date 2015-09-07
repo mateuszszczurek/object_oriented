@@ -9,7 +9,7 @@ public enum Column {
     ITEM_IDENTIFIER("Item") {
         @Override
         public Object valueIn(SniperSnapshot sniperSnapshot) {
-            return sniperSnapshot.itemId;
+            return sniperSnapshot.item.getItemId();
         }
     },
     LAST_PRICE("Last Price") {

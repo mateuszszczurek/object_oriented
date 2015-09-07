@@ -28,13 +28,16 @@ public class AuctionSniper implements AuctionEventListener {
     }
 
     @Override
-    public void currentPrice(int currentPrice, int increment, PriceSource priceSource) {
-        if (FromOtherBidder.equals(priceSource)) {
-            int bid = currentPrice + increment;
+    public void currentPrice(int price, int increment, PriceSource priceSource) {
+        int bid = price + increment;
+
+        if (!snapshot.canContinueBidding(bid)) {
+            snapshot = snapshot.loosing(price, bid);
+        } else if (FromOtherBidder.equals(priceSource)) {
             auction.bid(bid);
-            snapshot = snapshot.bidding(currentPrice, bid);
+            snapshot = snapshot.bidding(price, bid);
         } else if (FromSniper.equals(priceSource)) {
-            snapshot = snapshot.winning(currentPrice);
+            snapshot = snapshot.winning(price);
         }
 
         notifyChange();

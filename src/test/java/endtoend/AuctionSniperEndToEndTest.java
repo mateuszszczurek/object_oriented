@@ -88,7 +88,7 @@ public class AuctionSniperEndToEndTest {
         auction.hasReceivedABid(1098, SNIPER_XMPP_ID);
 
         auction.announceClosed();
-        application.showsSniperHasLostAuction(auction, 1000, 1000);
+        application.showsSniperHasLostAuction(auction, 1000, 1098);
     }
 
     @Test

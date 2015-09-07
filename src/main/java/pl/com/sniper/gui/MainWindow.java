@@ -1,11 +1,14 @@
 package pl.com.sniper.gui;
 
+import pl.com.sniper.auction.Item;
 import pl.com.sniper.auction.SniperPortfolio;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.lang.Integer.parseInt;
 
 public class MainWindow extends JFrame {
 
@@ -28,21 +31,29 @@ public class MainWindow extends JFrame {
 
     private JPanel makeControls() {
         JPanel controls = new JPanel(new FlowLayout());
-        final JTextField itemIdField = new JTextField();
-        itemIdField.setColumns(25);
-        itemIdField.setName(NEW_ITEM_ID_NAME);
-        controls.add(itemIdField);
+
+
+        JTextField itemIdField = addTextFieldTo(NEW_ITEM_ID_NAME, controls);
+        JTextField stopPriceField = addTextFieldTo(STOP_PRICE, controls);
 
         JButton joinAuctionButton  = new JButton("Join Auction");
         joinAuctionButton.setName(JOIN_BUTTON_NAME);
         joinAuctionButton.addActionListener(
-                 e -> notifyUsers(itemIdField.getText())
+                 e -> notifyUsers(new Item(parseInt(stopPriceField.getText()), itemIdField.getText()))
 
         );
 
         controls.add(joinAuctionButton);
 
         return controls;
+    }
+
+    private JTextField addTextFieldTo(String fieldName, JPanel controls) {
+        final JTextField textField = new JTextField();
+        textField.setColumns(25);
+        textField.setName(fieldName);
+        controls.add(textField);
+        return textField;
     }
 
     private void fillContentPane(JTable snipersTableModel, JPanel controls) {
@@ -61,8 +72,8 @@ public class MainWindow extends JFrame {
         return table;
     }
 
-    private void notifyUsers(String auctionItem) {
-        userEventListeners.forEach(listener -> listener.joinAuction(auctionItem));
+    private void notifyUsers(Item item) {
+        userEventListeners.forEach(listener -> listener.joinAuction(item));
     }
 
     public void addUserRequestListener(UserRequestListener userRequestListener) {
