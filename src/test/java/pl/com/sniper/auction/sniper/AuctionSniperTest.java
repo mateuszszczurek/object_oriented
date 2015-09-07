@@ -108,6 +108,8 @@ public class AuctionSniperTest {
         verify(sniperListener).sniperStateChanged(new SniperSnapshot(item(), 123, 123, WON));
     }
 
+
+
     private Item item() {
         return item(MAX_VALUE, ITEM_ID);
     }

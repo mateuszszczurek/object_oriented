@@ -70,6 +70,10 @@ public class FakeAuctionServer {
         currentChat.sendMessage(new AuctionEvent(price, minimalIncrement, auctioneer).toMessage());
     }
 
+    public void sendsCorruptedMessage(String message) throws XMPPException {
+        currentChat.sendMessage(message);
+    }
+
     private class AuctionEvent {
 
         private final int price;

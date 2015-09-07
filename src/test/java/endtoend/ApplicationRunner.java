@@ -15,6 +15,16 @@ public class ApplicationRunner {
 
     private AuctionSniperDriver driver;
 
+    public void startBiddingIn(FakeAuctionServer ... auctions) {
+        startSniper();
+
+        for (FakeAuctionServer auction : auctions) {
+            final String itemId = auction.getItemId();
+            driver.startBiddingFor(itemId, Integer.MAX_VALUE);
+            driver.showsSniperStatus(auction.getItemId(), 0, 0, stateFor(SniperStatus.JOINING));
+        }
+    }
+
     public void startBiddingWithStopPrice(int stopPrice, FakeAuctionServer ... auctions) {
         startSniper();
 
@@ -81,5 +91,13 @@ public class ApplicationRunner {
 
     public void showsSniperIsLosing(FakeAuctionServer auction, int lastPrice, int lastBid) {
         driver.showsSniperStatus(auction.getItemId(), lastPrice, lastBid, stateFor(SniperStatus.LOOSING));
+    }
+
+    public void showsFailureFor(FakeAuctionServer auction) {
+        driver.showsSniperStatus(auction.getItemId(), 0, 0, stateFor(SniperStatus.FAILED));
+    }
+
+    public void reportsInvalidMessage(FakeAuctionServer auction, String corruptedMessage) {
+
     }
 }

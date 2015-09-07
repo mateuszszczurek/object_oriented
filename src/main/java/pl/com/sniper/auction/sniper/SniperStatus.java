@@ -30,6 +30,13 @@ public enum SniperStatus {
 
     },
 
+    FAILED {
+        @Override
+        public SniperStatus whenAuctionClosed() {
+            return FAILED;
+        }
+    },
+
     WON,
 
     LOST;

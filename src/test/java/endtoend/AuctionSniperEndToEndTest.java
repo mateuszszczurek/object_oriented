@@ -1,5 +1,6 @@
 package endtoend;
 
+import org.jivesoftware.smack.XMPPException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -111,6 +112,36 @@ public class AuctionSniperEndToEndTest {
         auction.announceClosed();
 
         application.showsSniperHasLostAuction(auction, 1250, 1050);
+    }
+
+    @Test
+    public void sniperRecognizesAFailedauctionAndStoresFailureEvent() throws Exception {
+        String corruptedMessage = "Blah blah, you won't recognize me";
+
+        auction.startSellingItem();
+        auction2.startSellingItem();
+
+        application.startBiddingIn(auction, auction2);
+        auction.hasReceivedJoiRequestFromSniper(SNIPER_XMPP_ID);
+
+        auction.reportPrice(100, 20, "other bidder");
+
+        auction.hasReceivedABid(120, SNIPER_XMPP_ID);
+        auction.sendsCorruptedMessage(corruptedMessage);
+
+        application.showsFailureFor(auction);
+
+        auction.reportPrice(140, 20, "other bidder");
+
+        waitForAnotherAuctionEvent();
+
+        application.reportsInvalidMessage(auction, corruptedMessage);
+    }
+
+    private void waitForAnotherAuctionEvent() throws XMPPException, InterruptedException {
+        auction2.hasReceivedJoiRequestFromSniper(SNIPER_XMPP_ID);
+        auction2.reportPrice(100, 10, "other auctioner");
+        application.hasShownSniperIsBidding(auction2, 100, 110);
     }
 
     @After

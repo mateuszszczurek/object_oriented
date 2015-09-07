@@ -25,14 +25,20 @@ public class AuctionMessageTranslator implements MessageListener {
 
     @Override
     public void processMessage(Chat chat, Message message) {
+        try {
+            processMessage(message);
+        } catch (Exception e) {
+            listener.auctionFailed();
+        }
+    }
 
+    private void processMessage(Message message) {
         AuctionEvent event = AuctionEvent.from(message);
 
         switch (event.getType()) {
             case CLOSE_EVENT: listener.onAuctionClosed(); break;
             case PRICE_EVENT: listener.currentPrice(event.getPrice(), event.getIncrement(), event.isFrom(sniperId)) ; break;
         }
-
     }
 
     private static class AuctionEvent {
@@ -70,19 +76,29 @@ public class AuctionMessageTranslator implements MessageListener {
         }
 
         public String getType() {
-            return event.get(EVENT_KEY);
+            return get(EVENT_KEY);
         }
 
         public int getPrice() {
-            return Integer.parseInt(event.get("CurrentPrice"));
+            return Integer.parseInt(get("CurrentPrice"));
         }
 
         public int getIncrement() {
-            return Integer.parseInt(event.get("Increment"));
+            return Integer.parseInt(get("Increment"));
         }
 
         public String getAuctioneer() {
-            return event.get("Bidder");
+            return get("Bidder");
+        }
+
+        private String get(String whichValue) {
+            String value = event.get(whichValue);
+
+            if(value == null) {
+                throw new MissinValueException(whichValue);
+            }
+
+            return value;
         }
 
         public AuctionEventListener.PriceSource isFrom(String sniperId) {

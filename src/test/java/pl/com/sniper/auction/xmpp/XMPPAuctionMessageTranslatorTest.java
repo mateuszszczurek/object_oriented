@@ -4,7 +4,6 @@ import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.packet.Message;
 import org.junit.Test;
 import pl.com.sniper.auction.events.AuctionEventListener;
-import pl.com.sniper.auction.xmpp.AuctionMessageTranslator;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -52,6 +51,30 @@ public class XMPPAuctionMessageTranslatorTest {
         sut.processMessage(UNUSED_CHAT, auctionClosedMessage);
 
         verify(listener).currentPrice(192, 7, FromSniper);
+
+    }
+
+    @Test
+         public void notifiesAboutErranousMessage() {
+
+        Message corruptedMessage = new Message();
+        corruptedMessage.setBody("Blah blah...");
+
+        sut.processMessage(UNUSED_CHAT, corruptedMessage);
+
+        verify(listener).auctionFailed();
+
+    }
+
+    @Test
+    public void notifiesWhenThereAreMissingValuesInTheMessage() {
+
+        Message corruptedMessage = new Message();
+        corruptedMessage.setBody("SOLVersion: 1.1; CurrentPrice: 192; Increment: 7; Bidder: Someone else;");
+
+        sut.processMessage(UNUSED_CHAT, corruptedMessage);
+
+        verify(listener).auctionFailed();
 
     }
 
