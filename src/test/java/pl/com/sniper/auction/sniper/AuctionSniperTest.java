@@ -7,6 +7,7 @@ import pl.com.sniper.auction.events.AuctionEventListener;
 
 import static java.lang.Integer.MAX_VALUE;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static pl.com.sniper.auction.sniper.SniperSnapshot.joining;
 import static pl.com.sniper.auction.sniper.SniperStatus.*;
@@ -108,6 +109,15 @@ public class AuctionSniperTest {
         verify(sniperListener).sniperStateChanged(new SniperSnapshot(item(), 123, 123, WON));
     }
 
+
+    @Test
+    public void whenAuctionFailsDisplayFailureStatus() {
+
+        auctionSniper.auctionFailed();
+        auctionSniper.onAuctionClosed();
+
+        verify(sniperListener, times(2)).sniperStateChanged(new SniperSnapshot(item(), 0, 0, FAILED));
+    }
 
 
     private Item item() {

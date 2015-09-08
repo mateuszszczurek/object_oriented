@@ -136,6 +136,7 @@ public class AuctionSniperEndToEndTest {
         waitForAnotherAuctionEvent();
 
         application.reportsInvalidMessage(auction, corruptedMessage);
+        application.showsFailureFor(auction);
     }
 
     private void waitForAnotherAuctionEvent() throws XMPPException, InterruptedException {

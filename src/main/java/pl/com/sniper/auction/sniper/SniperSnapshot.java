@@ -61,6 +61,10 @@ public class SniperSnapshot {
         return new SniperSnapshot(item, lastPrice, lastBid, status.whenAuctionClosed());
     }
 
+    public SniperSnapshot failed() {
+        return new SniperSnapshot(item, 0, 0, SniperStatus.FAILED);
+    }
+
     public boolean canContinueBidding(int currentPrice) {
         return currentPrice < item.getStopPrice();
     }
