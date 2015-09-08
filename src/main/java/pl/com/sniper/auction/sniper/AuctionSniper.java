@@ -36,13 +36,13 @@ public class AuctionSniper implements AuctionEventListener {
     public void currentPrice(int price, int increment, PriceSource priceSource) {
         int bid = price + increment;
 
-        if (!snapshot.canContinueBidding(bid)) {
-            snapshot = snapshot.loosing(price, bid);
+        if (FromSniper.equals(priceSource)) {
+            snapshot = snapshot.winning(price);
+        } else if (!snapshot.canContinueBidding(bid)) {
+            snapshot = snapshot.loosing(price);
         } else if (FromOtherBidder.equals(priceSource)) {
             auction.bid(bid);
             snapshot = snapshot.bidding(price, bid);
-        } else if (FromSniper.equals(priceSource)) {
-            snapshot = snapshot.winning(price);
         }
 
         notifyChange();

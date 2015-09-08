@@ -95,7 +95,7 @@ public class AuctionMessageTranslator implements MessageListener {
             String value = event.get(whichValue);
 
             if(value == null) {
-                throw new MissinValueException(whichValue);
+                throw new MissingValue(whichValue);
             }
 
             return value;

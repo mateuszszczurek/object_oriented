@@ -6,7 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static endtoend.ApplicationRunner.SNIPER_XMPP_ID;
-import static java.lang.Integer.MAX_VALUE;
 
 public class AuctionSniperEndToEndTest {
 
@@ -22,7 +21,7 @@ public class AuctionSniperEndToEndTest {
     @Test
     public void sniperJoinsAuctionUntilAuctionCloses() throws Exception {
         auction.startSellingItem();
-        application.startBiddingWithStopPrice(MAX_VALUE, auction);
+        application.startBiddingIn(auction);
         auction.hasReceivedJoiRequestFromSniper(SNIPER_XMPP_ID);
         auction.announceClosed();
         application.showsSniperHasLostAuction(auction, 0, 0);
@@ -32,7 +31,7 @@ public class AuctionSniperEndToEndTest {
     public void snipersWinsAuctionByMakingHigherBid() throws Exception {
         auction.startSellingItem();
 
-        application.startBiddingWithStopPrice(MAX_VALUE, auction);
+        application.startBiddingIn(auction);
         auction.hasReceivedJoiRequestFromSniper(SNIPER_XMPP_ID);
 
         auction.reportPrice(1000, 98, "other bidder");
@@ -52,7 +51,7 @@ public class AuctionSniperEndToEndTest {
         auction.startSellingItem();
         auction2.startSellingItem();
 
-        application.startBiddingWithStopPrice(MAX_VALUE, auction, auction2);
+        application.startBiddingIn(auction, auction2);
 
         auction.hasReceivedJoiRequestFromSniper(SNIPER_XMPP_ID);
         auction2.hasReceivedJoiRequestFromSniper(SNIPER_XMPP_ID);
@@ -80,7 +79,7 @@ public class AuctionSniperEndToEndTest {
     public void sniperJoinsAuctionBidsAnLoses() throws Exception {
         auction.startSellingItem();
 
-        application.startBiddingWithStopPrice(MAX_VALUE, auction);
+        application.startBiddingIn(auction);
         auction.hasReceivedJoiRequestFromSniper(SNIPER_XMPP_ID);
 
         auction.reportPrice(1000, 98, "other bidder");
@@ -102,10 +101,11 @@ public class AuctionSniperEndToEndTest {
         auction.reportPrice(1000, 50, "other bidder");
 
         auction.hasReceivedABid(1050, SNIPER_XMPP_ID);
+        auction.reportPrice(1050, 50, SNIPER_XMPP_ID);
 
-        auction.reportPrice(1110, 10, "other bidder");
+        auction.reportPrice(1100, 50, "other bidder");
 
-        auction.reportPrice(1250, 10, "some other bidder");
+        auction.reportPrice(1250, 50, "some other bidder");
 
         application.showsSniperIsLosing(auction, 1250, 1050);
 
@@ -115,7 +115,7 @@ public class AuctionSniperEndToEndTest {
     }
 
     @Test
-    public void sniperRecognizesAFailedauctionAndStoresFailureEvent() throws Exception {
+    public void sniperRecognizesAFailedAuctionAndStoresFailureEvent() throws Exception {
         String corruptedMessage = "Blah blah, you won't recognize me";
 
         auction.startSellingItem();

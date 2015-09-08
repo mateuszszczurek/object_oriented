@@ -23,8 +23,8 @@ public class SniperSnapshot {
         return new SniperSnapshot(item, winningBid, winningBid, SniperStatus.WINNING);
     }
 
-    public SniperSnapshot loosing(int lastPrice, int lastBid) {
-        return new SniperSnapshot(item, lastPrice, lastBid, SniperStatus.LOOSING);
+    public SniperSnapshot loosing(int winningPrice) {
+        return new SniperSnapshot(item, winningPrice, lastBid, SniperStatus.LOOSING);
     }
 
     public SniperSnapshot(Item item, int lastPrice, int lastBid, SniperStatus status) {

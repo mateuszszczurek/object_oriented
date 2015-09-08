@@ -78,8 +78,8 @@ public class AuctionSniperTest {
         auctionSniper.currentPrice(100, 10, AuctionEventListener.PriceSource.FromOtherBidder);
         auctionSniper.onAuctionClosed();
 
-        verify(sniperListener).sniperStateChanged(new SniperSnapshot(item(10, ITEM_ID), 100, 110, LOOSING));
-        verify(sniperListener).sniperStateChanged(new SniperSnapshot(item(10, ITEM_ID), 100, 110, LOST));
+        verify(sniperListener).sniperStateChanged(new SniperSnapshot(item(10, ITEM_ID), 100, 0, LOOSING));
+        verify(sniperListener).sniperStateChanged(new SniperSnapshot(item(10, ITEM_ID), 100, 0, LOST));
     }
 
     @Test
@@ -94,8 +94,8 @@ public class AuctionSniperTest {
         auctionSniper.onAuctionClosed();
 
         verify(sniperListener).sniperStateChanged(new SniperSnapshot(item, 60, 70, BIDDING));
-        verify(sniperListener).sniperStateChanged(new SniperSnapshot(item, 120, 130, LOOSING));
-        verify(sniperListener).sniperStateChanged(new SniperSnapshot(item, 120, 130, LOST));
+        verify(sniperListener).sniperStateChanged(new SniperSnapshot(item, 120, 70, LOOSING));
+        verify(sniperListener).sniperStateChanged(new SniperSnapshot(item, 120, 70, LOST));
     }
 
     @Test

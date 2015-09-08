@@ -20,7 +20,20 @@ public class ColumnTest {
         assertThat(Column.SNIPER_STATE.valueIn(sniperSnapshot), equalTo("Bidding"));
     }
 
-    //todo add tests for other states
+    @Test
+    public void variousStatusesToColumnsTest() {
+        assertThat(Column.SNIPER_STATE.valueIn(snapshot(SniperStatus.JOINING)), equalTo("Joining"));
+        assertThat(Column.SNIPER_STATE.valueIn(snapshot(SniperStatus.WINNING)), equalTo("Winning"));
+        assertThat(Column.SNIPER_STATE.valueIn(snapshot(SniperStatus.BIDDING)), equalTo("Bidding"));
+        assertThat(Column.SNIPER_STATE.valueIn(snapshot(SniperStatus.LOOSING)), equalTo("Loosing"));
+        assertThat(Column.SNIPER_STATE.valueIn(snapshot(SniperStatus.FAILED)), equalTo("Failed"));
+        assertThat(Column.SNIPER_STATE.valueIn(snapshot(SniperStatus.LOST)), equalTo("Lost"));
+        assertThat(Column.SNIPER_STATE.valueIn(snapshot(SniperStatus.WON)), equalTo("Won"));
+    }
+
+    private SniperSnapshot snapshot(SniperStatus status) {
+        return new SniperSnapshot(new Item(100, "item id"), 100, 20, status);
+    }
 
 
 }
