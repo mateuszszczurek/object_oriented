@@ -3,17 +3,17 @@ package endtoend;
 import org.hamcrest.Matcher;
 import pl.com.sniper.auction.Main;
 import pl.com.sniper.auction.sniper.SniperStatus;
+import pl.com.sniper.auction.xmpp.XMPPAuction;
 import pl.com.sniper.gui.MainWindow;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.LogManager;
 
 import static endtoend.FakeAuctionServer.XMPP_HOSTNAME;
 import static java.nio.file.Files.readAllLines;
+import static java.util.logging.LogManager.getLogManager;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.isOneOf;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static pl.com.sniper.gui.SnipersTableModel.stateFor;
 
 public class ApplicationRunner {
@@ -106,22 +106,25 @@ public class ApplicationRunner {
 
     ApplicationLogDriver logDriver = new ApplicationLogDriver();
 
-    public void reportsInvalidMessage(FakeAuctionServer auction, String corruptedMessage) throws IOException {
+    public void reportsInvalidMessage(String corruptedMessage) throws IOException {
         logDriver.hasEntry(containsString(corruptedMessage));
+    }
+
+    public void resetLogger() {
+        logDriver.clearLog();
     }
 
     private class ApplicationLogDriver {
 
-        public static final String LOG_FILE_NAME = "auction-sniper.log";
-        private final File logFile = new File(LOG_FILE_NAME);
+        private final File logFile = new File(XMPPAuction.LOG_FILE_NAME);
 
         public void hasEntry(Matcher<String> stringMatcher) throws IOException {
-            assertThat(readAllLines(logFile.toPath()), isOneOf(stringMatcher));
+            assertTrue(readAllLines(logFile.toPath()).stream().anyMatch(stringMatcher::matches));
         }
 
         public void clearLog() {
             logFile.delete();
-            LogManager.getLogManager().reset();
+            getLogManager().reset();
         }
 
 

@@ -135,7 +135,7 @@ public class AuctionSniperEndToEndTest {
 
         waitForAnotherAuctionEvent();
 
-        application.reportsInvalidMessage(auction, corruptedMessage);
+        application.reportsInvalidMessage(corruptedMessage);
         application.showsFailureFor(auction);
     }
 
@@ -148,6 +148,7 @@ public class AuctionSniperEndToEndTest {
     @After
     public void stopAuction() {
         auction.stop();
+        application.resetLogger();
     }
 
     @After

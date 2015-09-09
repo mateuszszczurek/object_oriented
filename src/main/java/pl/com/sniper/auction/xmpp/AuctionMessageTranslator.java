@@ -9,6 +9,7 @@ import java.util.HashMap;
 
 import static pl.com.sniper.auction.events.AuctionEventListener.PriceSource.FromOtherBidder;
 import static pl.com.sniper.auction.events.AuctionEventListener.PriceSource.FromSniper;
+import static pl.com.sniper.auction.xmpp.FailedMessage.failedMessage;
 
 public class AuctionMessageTranslator implements MessageListener {
 
@@ -16,24 +17,30 @@ public class AuctionMessageTranslator implements MessageListener {
     public static final String PRICE_EVENT = "PRICE";
 
     private final AuctionEventListener listener;
+    private final FailedMessageLogger failedMessagesLogger;
     private final String sniperId;
 
-    public AuctionMessageTranslator(AuctionEventListener listener, String sniperId) {
+    public AuctionMessageTranslator(AuctionEventListener listener, String sniperId, FailedMessageLogger failedMessagesLogger) {
         this.listener = listener;
         this.sniperId = sniperId;
+        this.failedMessagesLogger = failedMessagesLogger;
     }
 
     @Override
     public void processMessage(Chat chat, Message message) {
+
+        String messageBody = message.getBody();
+
         try {
-            processMessage(message);
+            processMessage(messageBody);
         } catch (Exception e) {
+            failedMessagesLogger.reportFailedMessage(failedMessage(sniperId, messageBody, e));
             listener.auctionFailed();
         }
     }
 
-    private void processMessage(Message message) {
-        AuctionEvent event = AuctionEvent.from(message);
+    private void processMessage(String messageBody) {
+        AuctionEvent event = AuctionEvent.from(messageBody);
 
         switch (event.getType()) {
             case CLOSE_EVENT: listener.onAuctionClosed(); break;
@@ -47,8 +54,8 @@ public class AuctionMessageTranslator implements MessageListener {
 
         private final HashMap<String, String> event = new HashMap<>();
 
-        public static AuctionEvent from(Message message) {
-            return new AuctionEvent(message.getBody());
+        public static AuctionEvent from(String messageBody) {
+            return new AuctionEvent(messageBody);
         }
 
         public AuctionEvent(String messageBody) {
